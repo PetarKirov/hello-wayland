@@ -6,6 +6,20 @@
 #include <time.h>
 #include <unistd.h>
 
+int create_shm_file(off_t size) {
+	int fd = anonymous_shm_open();
+	if (fd < 0) {
+		return fd;
+	}
+
+	if (ftruncate(fd, size) < 0) {
+		close(fd);
+		return -1;
+	}
+
+	return fd;
+}
+
 /**
  * Boilerplate to create an in-memory shared file.
  *
@@ -39,18 +53,4 @@ static int anonymous_shm_open(void) {
 	} while (retries > 0 && errno == EEXIST);
 
 	return -1;
-}
-
-int create_shm_file(off_t size) {
-	int fd = anonymous_shm_open();
-	if (fd < 0) {
-		return fd;
-	}
-
-	if (ftruncate(fd, size) < 0) {
-		close(fd);
-		return -1;
-	}
-
-	return fd;
 }
