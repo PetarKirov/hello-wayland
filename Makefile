@@ -10,7 +10,7 @@ SHM_FILES=shm.c shm.h
 
 all: hello-wayland
 
-hello-wayland: main.c cat.h $(XDG_SHELL_FILES) $(SHM_FILES)
+hello-wayland: main.c cat.h $(XDG_SHELL_FILES) shm.o
 	$(CC) $(CFLAGS) -o $@ $^ -lrt $(WAYLAND_FLAGS)
 
 xdg-shell-client-protocol.h:
@@ -22,6 +22,9 @@ xdg-shell-protocol.c:
 cat.h: cat.png
 	convert cat.png -define h:format=bgra -depth 8 cat.h
 
+shm.o:
+	dmd -c -betterC shm.d
+
 .PHONY: clean
 clean:
-	$(RM) hello-wayland cat.h $(XDG_SHELL_FILES)
+	$(RM) hello-wayland cat.h $(XDG_SHELL_FILES) shm.o
